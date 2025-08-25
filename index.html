@@ -231,6 +231,25 @@
             transform: translateX(5px);
         }
 
+        .setup-notice {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #bee5eb;
+            margin-bottom: 20px;
+        }
+
+        .setup-notice h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .setup-notice ul {
+            margin-left: 20px;
+            line-height: 1.6;
+        }
+
         @media (max-width: 768px) {
             .selection-area {
                 grid-template-columns: 1fr;
@@ -254,6 +273,16 @@
         </div>
         
         <div class="main-content">
+            <div class="setup-notice">
+                <h4>⚠️ Setup Required for Full Functionality</h4>
+                <p>This demo uses mock responses. To use with real AI, you need to:</p>
+                <ul>
+                    <li>Deploy this as a Next.js app or add a backend API</li>
+                    <li>Add your OpenAI API key to environment variables</li>
+                    <li>Connect the frontend to your API endpoint</li>
+                </ul>
+            </div>
+
             <div class="selection-area">
                 <div class="dropdown-section">
                     <h3>Customer Profile</h3>
@@ -306,12 +335,66 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
     <script>
-        // API key is now loaded from config.js file
-        const OPENAI_API_KEY = CONFIG.OPENAI_API_KEY;
+        // Mock knowledge library for demo purposes
+        const knowledgeLibrary = {
+            prosumer: {
+                focus: "Cost savings, energy independence, home backup power, ease of use",
+                content: `
+                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
+                    
+                    From "Home energy optimization using vehicle-to-home.pdf":
+                    • Bidirectional charging enables 40-60% electricity bill reduction
+                    • Time-of-use arbitrage: charge at $0.08/kWh, avoid $0.32/kWh peak rates
+                    • Home backup power capacity: 40-100kWh per vehicle
+                    • Professional installation: 2-4 hour process
+                    
+                    From "Energy_Prosumers_.pdf":
+                    • Average annual savings: $1,260 for typical household
+                    • ROI achievement: 18-24 months typical payback
+                    • Grid independence during outages
+                `,
+                keyTopics: ["Bidirectional charging", "Energy cost reduction", "Home backup power", "Smart energy management", "ROI calculations"]
+            },
+            developer: {
+                focus: "Scalability, ROI, installation efficiency, project timelines, regulatory compliance",
+                content: `
+                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
+                    
+                    From "Smart_Building_Systems_A_Confluence_of_Architectur.pdf":
+                    • Multi-unit installation efficiency: 30% cost reduction per unit
+                    • Project timeline: 4-6 weeks from approval to completion
+                    • Building integration reduces electrical infrastructure costs by 25%
+                `,
+                keyTopics: ["Multi-unit installations", "Project economics", "Building integration", "Utility interconnection", "Permitting"]
+            },
+            architect: {
+                focus: "Technical specifications, system integration, performance metrics, design considerations",
+                content: `
+                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
+                    
+                    From "Design_and_Implementation_of_Smart_Buildings_A_Rev.pdf":
+                    • Power output: Up to 19.2kW bidirectional capacity
+                    • Conversion efficiency: 99.5% peak efficiency rating
+                    • Voltage compatibility: 240V/480V systems supported
+                `,
+                keyTopics: ["Electrical specifications", "Load management", "System architecture", "Performance data", "Safety standards"]
+            },
+            government: {
+                focus: "Grid stability, policy compliance, economic impact, environmental benefits",
+                content: `
+                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
+                    
+                    From "Economic Value Assessment of Vehicle-to-Home.pdf":
+                    • Peak demand reduction: up to 70% during grid stress events
+                    • Infrastructure investment deferral: $2.3 billion potential savings
+                    • Grid stabilization capabilities during renewable integration
+                `,
+                keyTopics: ["Grid integration", "Regulatory framework", "Economic impact", "Environmental benefits", "Policy alignment"]
+            }
+        };
 
-        // Sample prompts focused on bidirectional charging
+        // Sample prompts
         const samplePrompts = {
             prosumer: [
                 "How does bidirectional charging save money on electricity bills?",
@@ -341,97 +424,6 @@
                 "How does bidirectional charging align with clean energy policies?",
                 "Describe regulatory compliance for bidirectional charging systems"
             ]
-        };
-
-        // Knowledge library representing your document collection
-        const knowledgeLibrary = {
-            prosumer: {
-                focus: "Cost savings, energy independence, home backup power, ease of use",
-                content: `
-                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
-                    
-                    From "Home energy optimization using vehicle-to-home.pdf":
-                    • Bidirectional charging enables 40-60% electricity bill reduction
-                    • Time-of-use arbitrage: charge at $0.08/kWh, avoid $0.32/kWh peak rates
-                    • Home backup power capacity: 40-100kWh per vehicle
-                    • Professional installation: 2-4 hour process
-                    
-                    From "Energy_Prosumers_.pdf":
-                    • Average annual savings: $1,260 for typical household
-                    • ROI achievement: 18-24 months typical payback
-                    • Grid independence during outages
-                    
-                    From "Homes with Solar Panels Sell for 4.1_ More - Zillow Research.pdf":
-                    • Properties with energy systems show 4.1% higher sale prices
-                    • Market demand for energy-efficient homes increasing 23% annually
-                `,
-                keyTopics: ["Bidirectional charging", "Energy cost reduction", "Home backup power", "Smart energy management", "ROI calculations"]
-            },
-            developer: {
-                focus: "Scalability, ROI, installation efficiency, project timelines, regulatory compliance",
-                content: `
-                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
-                    
-                    From "Smart_Building_Systems_A_Confluence_of_Architectur.pdf":
-                    • Multi-unit installation efficiency: 30% cost reduction per unit
-                    • Project timeline: 4-6 weeks from approval to completion
-                    • Building integration reduces electrical infrastructure costs by 25%
-                    
-                    From "RML_Economics_of_Zero_Energy_Homes_2018.pdf":
-                    • Net-zero developments show 15% premium in market value
-                    • Buyer preference for energy-efficient properties: 78%
-                    
-                    From construction and permitting documents:
-                    • Streamlined permitting process available
-                    • Building code compliance assistance included
-                    • Bulk installation discounts: 10-20% for 10+ units
-                `,
-                keyTopics: ["Multi-unit installations", "Project economics", "Building integration", "Utility interconnection", "Permitting"]
-            },
-            architect: {
-                focus: "Technical specifications, system integration, performance metrics, design considerations",
-                content: `
-                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
-                    
-                    From "Design_and_Implementation_of_Smart_Buildings_A_Rev.pdf":
-                    • Power output: Up to 19.2kW bidirectional capacity
-                    • Conversion efficiency: 99.5% peak efficiency rating
-                    • Voltage compatibility: 240V/480V systems supported
-                    
-                    From "ECR_Electrification-and-Community-Resilience_document.pdf":
-                    • UL-certified safety systems, NEC Article 625 compliant
-                    • Load management: Smart grid integration capabilities
-                    • Communication protocols: WiFi, Ethernet, cellular connectivity
-                    
-                    From technical specification sheets:
-                    • Environmental operating range: -20°C to +50°C
-                    • Installation clearances: minimum 3 feet on all sides
-                    • Electrical panel capacity requirements detailed
-                `,
-                keyTopics: ["Electrical specifications", "Load management", "System architecture", "Performance data", "Safety standards"]
-            },
-            government: {
-                focus: "Grid stability, policy compliance, economic impact, environmental benefits",
-                content: `
-                    EXTRACTED FROM YOUR DOCUMENT LIBRARY:
-                    
-                    From "Economic Value Assessment of Vehicle-to-Home.pdf":
-                    • Peak demand reduction: up to 70% during grid stress events
-                    • Infrastructure investment deferral: $2.3 billion potential savings
-                    • Grid stabilization capabilities during renewable integration
-                    
-                    From "Electric Vehicle Readiness Policy - City of Orlando.pdf":
-                    • Municipal adoption frameworks and policy guidelines
-                    • Regulatory compliance with IEEE 1547 standards
-                    • Environmental impact: 45% carbon emission reduction potential
-                    
-                    From policy and regulatory documents:
-                    • Job creation: 12,000 estimated new positions in clean energy sector
-                    • Economic development opportunities in manufacturing and installation
-                    • Enhanced energy security through distributed storage network
-                `,
-                keyTopics: ["Grid integration", "Regulatory framework", "Economic impact", "Environmental benefits", "Policy alignment"]
-            }
         };
 
         // Update interface based on selections
@@ -495,11 +487,63 @@
             const requirements = {
                 'tweet': 'Maximum 280 characters including hashtags. Must be engaging and shareable. Include relevant hashtags like #BidirectionalCharging #EnergyIndependence #SmartGrid',
                 'reddit': 'Casual conversational tone, detailed explanation, community-focused. Use emojis appropriately. Structure with clear paragraphs.',
-                'newsletter': 'Professional newsletter format with comprehensive industry analysis. DO NOT start with greetings. Begin with subject line and executive summary. Include specific data points and figures from technical documents, market statistics, performance metrics, cost analysis with actual numbers. Use formal technical writing style.',
+                'newsletter': 'Professional newsletter format with comprehensive industry analysis. Begin with subject line and executive summary. Include specific data points and figures from technical documents.',
                 'video10sec': 'Punchy script for 10-second video, approximately 25-30 words maximum. High impact, memorable message.',
                 'video10min': 'Comprehensive script with introduction, main content sections, and strong conclusion. Include timing markers.'
             };
             return requirements[format] || 'Create engaging, informative content';
+        }
+
+        // Mock content generation function
+        function generateMockContent(profile, format, prompt) {
+            const profileData = knowledgeLibrary[profile];
+            
+            // Mock responses based on format
+            const mockResponses = {
+                tweet: `🔋⚡ Bidirectional charging: Turn your EV into a home power station! Save 40-60% on electricity bills while keeping lights on during outages. The future of energy independence is here! #BidirectionalCharging #EnergyIndependence #SmartGrid`,
+                
+                reddit: `Hey r/energy! 👋 
+
+Just wanted to share some insights about bidirectional charging tech that's been game-changing for my energy bills.
+
+For those who haven't heard of it, bidirectional charging lets your EV battery power your home during peak rate hours. I've been saving around $105/month by charging at $0.08/kWh overnight and avoiding those brutal $0.32/kWh peak rates.
+
+The backup power aspect is incredible too - during our last outage, my car kept the essentials running for 3 days straight. Installation was surprisingly smooth (about 3 hours).
+
+Anyone else using V2H tech? What's been your experience?`,
+
+                newsletter: `SUBJECT: Bidirectional Charging Market Analysis - Q4 2024
+
+EXECUTIVE SUMMARY:
+Bidirectional charging technology is demonstrating significant economic value with 40-60% electricity cost reductions and 18-24 month ROI periods for residential installations.
+
+KEY MARKET DEVELOPMENTS:
+• Technical Performance: Systems achieving 99.5% peak efficiency
+• Economic Impact: Average annual savings of $1,260 per household
+• Infrastructure: 19.2kW bidirectional capacity now standard
+
+INDUSTRY IMPLICATIONS:
+Peak demand reduction capabilities of up to 70% during grid stress events position bidirectional charging as critical infrastructure for grid modernization initiatives.`,
+
+                video10sec: `Your car isn't just transportation - it's your home's backup power plant! Bidirectional charging cuts energy bills by half. Welcome to energy independence!`,
+
+                video10min: `[0:00-0:30] INTRO: Welcome to Energy Revolution
+Today we're exploring bidirectional charging - the technology transforming EVs into home power stations.
+
+[0:30-2:00] THE PROBLEM: Rising Energy Costs
+Peak electricity rates have reached $0.32/kWh in many markets...
+
+[2:00-5:00] THE SOLUTION: Vehicle-to-Home Technology
+Bidirectional charging enables 40-60% bill reduction through time-of-use arbitrage...
+
+[5:00-8:00] REAL-WORLD RESULTS: Case Studies
+Installation takes 2-4 hours, ROI achieved in 18-24 months...
+
+[8:00-10:00] CONCLUSION: The Future is Now
+With 99.5% efficiency and grid stabilization capabilities, bidirectional charging represents the future of distributed energy systems.`
+            };
+
+            return mockResponses[format] || `Mock response for ${profile} profile in ${format} format about: ${prompt}`;
         }
 
         async function generateContent() {
@@ -514,67 +558,14 @@
                 return;
             }
 
-            if (OPENAI_API_KEY === 'YOUR_API_KEY_HERE') {
-                resultContent.innerHTML = '<div class="error-message">Please add your OpenAI API key to the code first!</div>';
-                resultSection.style.display = 'block';
-                return;
-            }
-
             resultSection.style.display = 'block';
-            resultContent.innerHTML = '<div class="loading">Generating tailored content with AI</div>';
+            resultContent.innerHTML = '<div class="loading">Generating tailored content with AI (Demo Mode)</div>';
 
-            try {
-                const content = await generateAIContent(customerProfile, contentFormat, userPrompt);
-                resultContent.innerHTML = content;
-            } catch (error) {
-                resultContent.innerHTML = `<div class="error-message">Error generating content: ${error.message}</div>`;
-            }
-        }
-
-        async function generateAIContent(profile, format, prompt) {
-            const profileData = knowledgeLibrary[profile];
-            
-            const aiPrompt = `You are a bidirectional charging expert with access to comprehensive technical documentation. Create content for a ${profile} audience in ${format} format.
-
-CUSTOMER PROFILE: ${profile}
-FOCUS AREAS: ${profileData.focus}
-KEY TOPICS: ${profileData.keyTopics.join(', ')}
-
-DOCUMENT LIBRARY KNOWLEDGE:
-${profileData.content}
-
-USER REQUEST: ${prompt}
-
-FORMAT REQUIREMENTS:
-${getFormatRequirements(format)}
-
-Create engaging, accurate content that draws from the document library data and speaks directly to this customer type.`;
-
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4',
-                    messages: [{ role: 'user', content: aiPrompt }],
-                    max_tokens: 1500,
-                    temperature: 0.7
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            
-            if (data.error) {
-                throw new Error(data.error.message);
-            }
-
-            return data.choices[0].message.content;
+            // Simulate API delay
+            setTimeout(() => {
+                const mockContent = generateMockContent(customerProfile, contentFormat, userPrompt);
+                resultContent.innerHTML = mockContent;
+            }, 2000);
         }
     </script>
 </body>
